@@ -1,0 +1,63 @@
+﻿@using ExerciseDB_Research.Controllers;
+@model ExerciseModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-3"> Choose your Exercise </h1>
+    <select name="exercise" id="exercise" onchange="updateExercise()">
+        @foreach (var str in Model.getExerciseList())
+        {
+            {
+                <option value="@str"> @str </option>
+            }
+        }
+    </select>
+    <button onclick="request()"> Search </button>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h2> Result </h2>
+    <div id="result">
+
+    </div>
+</div>
+
+<script>
+    let exerciseChoice = "back";
+    let exerciseArray = [];
+
+    function updateExercise() {
+        exerciseChoice = document.getElementById("exercise").value;
+        console.log(exerciseChoice);
+    }
+
+    async function request() {
+        const url = `https://exercisedb.p.rapidapi.com/exercises/bodyPart/${exerciseChoice}?limit=10`;
+        const options = {
+            method: 'GET',
+            headers: {
+                'X-RapidAPI-Key': 'f69f2da5c1msh1331231abd4a573p1d8d45jsn4af60eda3f35',
+                'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
+            }
+        };
+        
+        try {
+            document.getElementById("result").innerHTML = "";
+            const response = await fetch(url, options);
+            const result = await response.json();
+            for (let i = 0; i < result.length; i ++) {
+                appendToHTML(result[i]["gifUrl"])
+                console.log(result[i]);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    function appendToHTML(url) {
+        let img = document.createElement("img")
+        img.src = url
+        document.getElementById("result").append(img)
+    }
+</script>
