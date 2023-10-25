@@ -16,7 +16,6 @@
         }
     </select>
     <button onclick="request()"> Search </button>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
     <h2> Result </h2>
     <div id="result">
 
@@ -29,7 +28,6 @@
 
     function updateExercise() {
         exerciseChoice = document.getElementById("exercise").value;
-        console.log(exerciseChoice);
     }
 
     async function request() {
@@ -47,7 +45,7 @@
             const response = await fetch(url, options);
             const result = await response.json();
             for (let i = 0; i < result.length; i ++) {
-                appendToHTML(result[i]["gifUrl"])
+                appendToHTML(result[i]["gifUrl"], result[i]["instructions"])
                 console.log(result[i]);
             }
         } catch (error) {
@@ -55,9 +53,17 @@
         }
     }
 
-    function appendToHTML(url) {
+    function appendToHTML(url, instructions) {
         let img = document.createElement("img")
         img.src = url
         document.getElementById("result").append(img)
+        let div = document.createElement('div');
+        for (let i = 0; i < instructions.length; i ++) {
+            let p = document.createElement("p");
+            p.innerText = instructions[i]
+            div.append(p);
+        }
+        
+        document.getElementById("result").append(div)
     }
 </script>
